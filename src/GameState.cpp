@@ -5,10 +5,11 @@ GameState::GameState() :
     m_level(0),
     m_lines(0)
 {
-    randomize();
+    // Seed our random number generator with the current time
+    srand(time(NULL));
 }
 
-BlockInfo& GameState::getBlock(int x, int y)
+BlockInfo& GameState::GetBlock(int x, int y)
 {
     // Check that this request is in bounds, otherwise give tl space
     if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) {
@@ -20,19 +21,13 @@ BlockInfo& GameState::getBlock(int x, int y)
     return m_grid[index];
 }
 
-void GameState::randomize() {
-    BlockInfo a{ true, cv::Scalar(128, 215, 0), false };
-    BlockInfo b{ true, cv::Scalar(0, 128, 255), false };
-    BlockInfo c{ true, cv::Scalar(240, 240, 240), false };
-    BlockInfo d{ true, cv::Scalar(128, 0, 128), false };
-    BlockInfo e{ true, cv::Scalar(25, 240, 25), false };
-
-    std::array <BlockInfo, 5> these = { a,b,c,d,e };
-
-    srand(time(NULL));
-    for (int i = 0; i < 50; i++) {
+void GameState::RandomizeGrid()
+{
+    // This takes 100 random positions in the grid, and randomizes the color of
+    // the block there and whether or not it exists
+    for (int i = 0; i < 100; i++) {
         int index = rand() % gridSize;
-        int c = rand() % 5;
-        m_grid[index] = these[c];
+        m_grid[index].exists = rand() % 2;
+        m_grid[index].color = cv::Scalar(rand() % 256, rand() % 256, rand() % 256);
     }
 }

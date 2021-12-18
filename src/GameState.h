@@ -18,9 +18,9 @@ public:
     static const int gridHeight = 20;
     static const int gridSize = gridWidth * gridHeight;
 
-    BlockInfo& getBlock(int x, int y);
+    BlockInfo& GetBlock(int x, int y);
     
-    void randomize();
+    void RandomizeGrid();
 
 private:
     std::array<BlockInfo, gridSize> m_grid;

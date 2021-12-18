@@ -28,10 +28,9 @@ void VideoDisplay::DrawGrid()
     cv::Mat temp(gridHeight, gridWidth, CV_8UC3, cv::Scalar(0, 0, 0));
 
     // Iterate over gamestate grid
-    // For each row,
     for (int row = 0; row < GameState::gridHeight; row++) {
         for (int col = 0; col < GameState::gridWidth; col++) {
-            auto& block = m_pGameState->getBlock(col, row);
+            auto& block = m_pGameState->GetBlock(col, row);
             // if exists, draw box with color
             if (block.exists) {
                 cv::Rect region;
@@ -63,10 +62,33 @@ void VideoDisplay::DisplayLoop()
     cv::String windowName = "Tertis";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
 
+    // This gets the current time, we'll need this for later
+    // for our fps counter
+    auto then = std::chrono::high_resolution_clock::now();
+    int framecount = 0;
+
     while (true)
     {
-        m_pGameState->randomize();
+        // Just for testing, randomize the grid and re-draw it
+        m_pGameState->RandomizeGrid();
         DrawGrid();
+        
+        // Keep track of how many frames we draw each second
+        framecount++;
+        auto now = std::chrono::high_resolution_clock::now();
+        
+        // If it's been a second since we last reported frame count,
+        // report that now
+        if (now - then >= 1s) {
+            std::cout << "fps: " << framecount << std::endl;
+            then = now;
+            framecount = 0;
+        }
+
+        // Show the image and then wait for 15 ms
+        // This effectively sets our max fps to 1 sec/15ms = 66 fps
+        // It'll be lower in practice though since the above functions
+        // in this loop also take some time
         cv::imshow(windowName, m_displayFrame);
         cv::waitKey(15);
     }
