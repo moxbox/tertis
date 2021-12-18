@@ -1,7 +1,10 @@
 #include <iostream>
+#include "Tertis.h"
 
 int main(int argc, char** argv)
 {
-	std::cout << "sup" << std::endl;
-	return 0;
+    Tertis theGame;
+    theGame.Run();
+
+    return 0;
 }
